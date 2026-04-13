@@ -1,0 +1,14 @@
+# 元画像（大きいので除外）
+*.PNG
+*.png
+
+# サーバー・ログ
+serve.py
+*.log
+*.command
+
+# Mac アプリ
+レシピ帳.app/
+
+# 設定ファイル
+.claude/

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="100" fill="#c0392b"/>
+  <!-- Pan body -->
+  <ellipse cx="256" cy="260" rx="160" ry="120" fill="#e8d5c4"/>
+  <ellipse cx="256" cy="245" rx="160" ry="108" fill="#fff8f2"/>
+  <!-- Handle -->
+  <rect x="400" y="235" width="90" height="32" rx="16" fill="#8B4513"/>
+  <rect x="396" y="231" width="90" height="32" rx="16" fill="#c0392b"/>
+  <!-- Steam lines -->
+  <path d="M200 160 Q210 140 200 120" stroke="#c0392b" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M256 150 Q266 130 256 110" stroke="#c0392b" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <path d="M312 160 Q322 140 312 120" stroke="#c0392b" stroke-width="8" fill="none" stroke-linecap="round" opacity="0.5"/>
+  <!-- Egg yolk -->
+  <ellipse cx="256" cy="250" rx="70" ry="50" fill="rgba(255,220,100,0.4)"/>
+  <circle cx="256" cy="248" r="28" fill="#f5a623"/>
+</svg>
