@@ -1174,7 +1174,16 @@
           renderImgPreview();
         }
       } catch (err) {
-        alert('読み取りに失敗しました: ' + err.message);
+        importBtn.innerHTML = `
+          <div style="background:#fff0f0;border:1px solid #e74c3c;border-radius:8px;padding:12px;font-size:13px;color:#c0392b;margin-bottom:8px;">
+            ❌ 読み取りに失敗しました<br><span style="font-size:11px;opacity:.8">${err.message}</span>
+          </div>
+          <button class="btn-import-image" id="btnImportImage">📷 もう一度試す</button>`;
+        document.getElementById('btnImportImage').addEventListener('click', () => {
+          if (!apiKey) { document.getElementById('apiKeyNotice').style.display = 'flex'; return; }
+          document.getElementById('importImageInput').click();
+        });
+        return;
       }
 
       importBtn.innerHTML = `<button class="btn-import-image" id="btnImportImage">📷 レシピ画像から自動入力</button>`;
@@ -1196,7 +1205,7 @@
         'anthropic-dangerous-direct-browser-use': 'true',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
+        model: 'claude-haiku-4-5',
         max_tokens: 1024,
         messages: [{
           role: 'user',
