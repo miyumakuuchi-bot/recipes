@@ -650,6 +650,13 @@
           レシピ画像からの自動入力に使用します。キーはこのデバイスのみに保存されます。
         </p>
       </div>
+      <div class="form-group">
+        <label>プロキシ URL <span style="font-size:0.75rem;color:#aaa;">（iPhoneから使う場合に必要）</span></label>
+        <input type="url" id="proxyUrlInput" placeholder="https://xxx.workers.dev">
+        <p style="margin-top:6px; font-size:0.8rem; color:#9a7057;">
+          Cloudflare Worker のURLを入力してください。<a href="https://github.com/miyumakuuchi-bot/recipes/blob/main/proxy/worker.js" target="_blank" style="color:#c0392b;">設定方法はこちら</a>
+        </p>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" id="settingsCancel">キャンセル</button>
@@ -1106,9 +1113,11 @@
 
   // ── Settings Modal ─────────────────────────────────────────────────────────
   let apiKey = localStorage.getItem('anthropicApiKey') || '';
+  let proxyUrl = localStorage.getItem('proxyUrl') || '';
 
   function openSettings() {
     document.getElementById('apiKeyInput').value = apiKey;
+    document.getElementById('proxyUrlInput').value = proxyUrl;
     document.getElementById('settingsModal').classList.add('open');
   }
   function closeSettings() {
@@ -1122,7 +1131,9 @@
   });
   document.getElementById('settingsSave').addEventListener('click', () => {
     apiKey = document.getElementById('apiKeyInput').value.trim();
+    proxyUrl = document.getElementById('proxyUrlInput').value.trim().replace(/\/$/, '');
     localStorage.setItem('anthropicApiKey', apiKey);
+    localStorage.setItem('proxyUrl', proxyUrl);
     closeSettings();
     document.getElementById('apiKeyNotice').style.display = 'none';
   });
@@ -1237,7 +1248,10 @@
   });
 
   async function extractRecipeFromImage(base64, mimeType) {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const endpoint = proxyUrl
+      ? proxyUrl  // Cloudflare Worker プロキシ経由
+      : 'https://api.anthropic.com/v1/messages';
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'x-api-key': apiKey,
