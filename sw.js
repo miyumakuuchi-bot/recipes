@@ -1,4 +1,4 @@
-const CACHE = 'recipes-v2';
+const CACHE = 'recipes-v3';
 
 // キャッシュするアセット
 const STATIC_ASSETS = [
