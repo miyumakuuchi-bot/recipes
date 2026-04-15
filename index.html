@@ -1248,9 +1248,12 @@
   });
 
   async function extractRecipeFromImage(base64, mimeType) {
-    const endpoint = proxyUrl
-      ? proxyUrl  // Cloudflare Worker プロキシ経由
-      : 'https://api.anthropic.com/v1/messages';
+    // ローカルサーバーなら自動でプロキシ経由（CORSなし）
+    const isLocal = ['localhost','127.0.0.1'].includes(location.hostname)
+                 || /^192\.168\.|^10\.|^172\.(1[6-9]|2\d|3[01])\./.test(location.hostname);
+    const endpoint = isLocal
+      ? '/api/proxy'
+      : (proxyUrl || 'https://api.anthropic.com/v1/messages');
     const res = await fetch(endpoint, {
       method: 'POST',
       headers: {
