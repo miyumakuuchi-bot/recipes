@@ -1115,6 +1115,12 @@
   let apiKey = localStorage.getItem('anthropicApiKey') || '';
   let proxyUrl = localStorage.getItem('proxyUrl') || '';
 
+  // GitHub Pages では自動的に Cloudflare Worker を使う
+  if (location.hostname === 'miyumakuuchi-bot.github.io' && !proxyUrl) {
+    proxyUrl = 'https://recipes-proxy.miyu-recipes.workers.dev';
+    localStorage.setItem('proxyUrl', proxyUrl);
+  }
+
   function openSettings() {
     document.getElementById('apiKeyInput').value = apiKey;
     document.getElementById('proxyUrlInput').value = proxyUrl;
