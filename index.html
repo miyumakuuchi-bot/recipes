@@ -657,6 +657,17 @@
           Cloudflare Worker のURLを入力してください。<a href="https://github.com/miyumakuuchi-bot/recipes/blob/main/proxy/worker.js" target="_blank" style="color:#c0392b;">設定方法はこちら</a>
         </p>
       </div>
+      <div class="form-group">
+        <label>レシピのバックアップ</label>
+        <div style="display:flex;gap:10px;margin-top:6px;">
+          <button id="exportBtn" style="flex:1;padding:10px;border:none;border-radius:10px;background:#f5ece4;color:#7a4f3a;font-size:0.9rem;cursor:pointer;">📤 書き出す</button>
+          <button id="importBtn2" style="flex:1;padding:10px;border:none;border-radius:10px;background:#f5ece4;color:#7a4f3a;font-size:0.9rem;cursor:pointer;">📥 読み込む</button>
+          <input type="file" id="importFileInput" accept=".json" style="display:none">
+        </div>
+        <p style="margin-top:6px; font-size:0.8rem; color:#9a7057;">
+          書き出したファイルを別の端末で読み込むと同期できます。
+        </p>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" id="settingsCancel">キャンセル</button>
@@ -1146,6 +1157,46 @@
   document.getElementById('openSettingsFromNotice').addEventListener('click', () => {
     document.getElementById('editModal').classList.remove('open');
     openSettings();
+  });
+
+  // ── エクスポート ────────────────────────────────────────────────────────────
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    const data = JSON.stringify(recipes, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `recipes-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // ── インポート ────────────────────────────────────────────────────────────
+  document.getElementById('importBtn2').addEventListener('click', () => {
+    document.getElementById('importFileInput').click();
+  });
+  document.getElementById('importFileInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    e.target.value = '';
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (!Array.isArray(imported)) throw new Error();
+        // 既存レシピとIDが重複しないものだけ追加
+        const existingIds = new Set(recipes.map(r => r.id));
+        const newOnes = imported.filter(r => !existingIds.has(r.id));
+        recipes = [...recipes, ...newOnes];
+        save();
+        render();
+        closeSettings();
+        alert(`✅ ${newOnes.length}件のレシピを読み込みました！`);
+      } catch {
+        alert('❌ 読み込みに失敗しました。正しいファイルか確認してください。');
+      }
+    };
+    reader.readAsText(file);
   });
 
   // ── Image Import (Claude API) ───────────────────────────────────────────────
